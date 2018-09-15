@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/flexer.h
+FlexLexer.h
+-
+lexer.h
+/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/lexer.h
+
+/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/hlexer.h
+lexer.h
+/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/lexer.h
+
+/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/lexer.h
+iostream
+-
+string
+-
+token.h
+/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/token.h
+
+/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/main.cpp
+iostream
+-
+fstream
+-
+hlexer.h
+/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/hlexer.h
+flexer.h
+/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/flexer.h
+
+/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/token.h
+iostream
+-
+
