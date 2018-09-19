@@ -59,6 +59,7 @@ float [0-9]+.[0-9]+[eE][0-9]+|[0-9]+[eE][0-9]+|[0-9]+.[0-9]+
 "continue"      { return Tokentype::kwContinue; }
 "int"           { return Tokentype::kwInt; }
 "real"          { return Tokentype::kwReal; }
+"bool"          { return Tokentype::kwBool; }
 
 [a-zA-z]+       { return Tokentype::Identifier; }
 .               { return Tokentype::ErrUnknown; }

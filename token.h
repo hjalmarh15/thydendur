@@ -25,7 +25,7 @@ enum Tokentype {
     kwClass, kwStatic, kwVoid,
     kwIf, kwElse, kwFor,
     kwReturn, kwBreak, kwContinue,
-    kwInt, kwReal,
+    kwInt, kwReal, kwBool,
     // Punctuation marks
     ptLBrace, ptRBrace,
     ptLBracket, ptRBracket,
@@ -71,6 +71,7 @@ inline std::ostream& operator<<(std::ostream& os, Tokentype type) {
         OUTPUT_TT(kwContinue)
         OUTPUT_TT(kwInt)
         OUTPUT_TT(kwReal)
+        OUTPUT_TT(kwBool)
         OUTPUT_TT(ptLBrace)
         OUTPUT_TT(ptRBrace)
         OUTPUT_TT(ptLBracket)
