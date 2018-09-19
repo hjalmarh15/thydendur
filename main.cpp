@@ -28,13 +28,14 @@ int main(int argc, char* argv[]) {
 
     // Instantiate the right lexer.
     Lexer* lexer;
-    /*if (use_flex) {
+    if (use_flex) {
         lexer = new FLexer(fis);
     }
     else {
         lexer = new HLexer(fis);
-    }*/
+    }
     lexer = new FLexer(fis);
+
 
     // Output tokens.
     cout << "Using lexical analyzer: " << lexer->get_name() << endl;

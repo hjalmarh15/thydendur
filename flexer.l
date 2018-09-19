@@ -61,6 +61,6 @@ float [0-9]+.[0-9]+[eE][0-9]+|[0-9]+[eE][0-9]+|[0-9]+.[0-9]+
 "real"          { return Tokentype::kwReal; }
 "bool"          { return Tokentype::kwBool; }
 
-[a-zA-z]+       { return Tokentype::Identifier; }
+[a-zA-z_][a-zA-z0-9_]+       { return Tokentype::Identifier; }
 .               { return Tokentype::ErrUnknown; }
 %%

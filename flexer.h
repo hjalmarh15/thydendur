@@ -9,7 +9,7 @@ class FLexer : public Lexer {
 public:
 
     FLexer( std::istream& is )
-      : Lexer( is ), lexer_( &is ){
+            : Lexer( is ), lexer_( &is ){
     }
 
     virtual void get_next( Token& token ) {

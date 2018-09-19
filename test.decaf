@@ -7,7 +7,7 @@ class Program {
 
     /* this is
     a
-    multiline
+    multilines
     comment
     */
     static void main() {
@@ -17,7 +17,7 @@ class Program {
            number = 12.34;
         }
         else {
-           number = 12.34E7
+          number = 12.34E7
         }
         i = i + j;
     }
