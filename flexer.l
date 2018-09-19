@@ -6,8 +6,18 @@
 #include "token.h"
 %}
 ws [ \t\r\n]
-%%
+digit [0-9]
+float [0-9]+.[0-9]+[eE][0-9]+|[0-9]+[eE][0-9]+|[0-9]+.[0-9]+
+
+%%  IntValue, RealValue, BoolValue,
 {ws}+             /* do nothing */
+\/\/.*            /* do nothing */
+\/\*(.|\n)*\*\/   /* do nothing */
+{digit}+        { return Tokentype::IntValue;}
+{float}         { return Tokentype::RealValue;}
+"true"          { return Tokentype::BoolValue;}
+"false"         { return Tokentype::BoolValue;}
+
 "{"             { return Tokentype::ptLBrace; }
 "}"             { return Tokentype::ptRBrace; }
 "("             { return Tokentype::ptLParen; }

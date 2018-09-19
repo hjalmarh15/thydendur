@@ -2,6 +2,14 @@ class Program {
     int i, j;
     real number;
 
+
+    //this is a comment
+
+    /* this is
+    a
+    multiline
+    comment
+    */
     static void main() {
         i = 0;
         j = 1;
