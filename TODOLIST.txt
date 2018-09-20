@@ -1,4 +1,4 @@
-	{ws}+             /* do nothing */
+    	{ws}+             /* do nothing */
 	\/\/.*            /* do nothing */
 	\/\*(.|\n)*\*\/   /* do nothing */
 {digit}+        { return Tokentype::IntValue;}
@@ -13,8 +13,8 @@
 	"]"             { return Tokentype::ptRBracket; }
 	";"             { return Tokentype::ptSemicolon; }
 	","             { return Tokentype::ptComma; }
-"=="            { return Tokentype::OpRelEQ; }
-"!="            { return Tokentype::OpRelNEQ; }
+	"=="            { return Tokentype::OpRelEQ; }
+	"!="            { return Tokentype::OpRelNEQ; }
 "<"             { return Tokentype::OpRelLT; }
 "<="            { return Tokentype::OpRelLTE; }
 ">"             { return Tokentype::OpRelGT; }
@@ -28,8 +28,8 @@
 "%"             { return Tokentype::OpArtModulus; }
 "&&"            { return Tokentype::OpLogAnd; }
 "||"            { return Tokentype::OpLogOr; }
-"!"             { return Tokentype::OpLogNot; }
-"="             { return Tokentype::OpAssign; }
+	"!"             { return Tokentype::OpLogNot; }
+	"="             { return Tokentype::OpAssign; }
 "class"         { return Tokentype::kwClass; }
 "static"        { return Tokentype::kwStatic; }
 "void"          { return Tokentype::kwVoid; }
