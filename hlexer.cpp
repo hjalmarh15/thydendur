@@ -9,6 +9,7 @@ HLexer::HLexer( std::istream& is  )
     is_.get( c_ );
 }
 
+//TODO Ekki gleyma að prófa deilingu í flexer!!!
 
 void HLexer::get_next( Token& token )
 {
@@ -17,6 +18,58 @@ void HLexer::get_next( Token& token )
     while ( is_.good() && isspace(c_) ) {
         if ( c_ == '\n' ) { ++line_no_; }
         is_.get(c_);
+    }
+
+    if(c_ == '/')
+    {
+        char c = c_;
+        is_.get(c_);
+        if(c_ == '*')
+        {
+            while ( is_.good())
+            {
+                if( c_ == '\n' )
+                {
+                    ++line_no_;
+                }
+                if( c_  == '*')
+                {
+                    is_.get(c_);
+                    if(c_ == '/')
+                    {
+                        is_.get(c_);
+                        break;
+                    }
+                }
+                is_.get(c_);
+            }
+            if ( !is_.good() )
+            {
+                token.type = Tokentype::EOI;
+                return;
+            }
+        }
+        else if(c_ == '/')
+        {
+            while ( is_.good())
+            {
+                if( c_ == '\n' )
+                {
+                    ++line_no_;
+                    break;
+                }
+                is_.get(c_);
+            }
+            if ( !is_.good() ) {
+                token.type = Tokentype::EOI;
+            }
+        }
+        else
+        {
+            token.type = Tokentype::OpArtDiv;
+            token.lexeme.push_back(c);
+        }
+        return;
     }
 
     token.line = line_no_;
@@ -39,27 +92,27 @@ void HLexer::get_next( Token& token )
             is_.get(c_);
             break;
         }
-       case '(':
-           token.type = Tokentype::ptLParen;
-           token.lexeme.push_back(c_);
+        case '(':
+            token.type = Tokentype::ptLParen;
+            token.lexeme.push_back(c_);
             is_.get(c_);
             break;
-       case ')':
+        case ')':
             token.type = Tokentype::ptRParen;
             token.lexeme.push_back(c_);
             is_.get(c_);
             break;
-       case '[':
+        case '[':
             token.type = Tokentype::ptLBracket;
             token.lexeme.push_back(c_);
             is_.get(c_);
             break;
-       case ']':
+        case ']':
             token.type = Tokentype::ptRBracket;
             token.lexeme.push_back(c_);
             is_.get(c_);
             break;
-       case ';':
+        case ';':
             token.type = Tokentype::ptSemicolon;
             token.lexeme.push_back(c_);
             is_.get(c_);
@@ -73,13 +126,12 @@ void HLexer::get_next( Token& token )
             char c = c_;
             is_.get(c_);
 
-            if(c_ == '=') {
+            if (c_ == '=') {
                 token.type = Tokentype::OpRelEQ;
                 token.lexeme.push_back(c);
                 token.lexeme.push_back(c_);
                 is_.get(c_);
-            }
-            else {
+            } else {
                 token.type = Tokentype::OpAssign;
                 token.lexeme.push_back(c);
             }
@@ -88,13 +140,12 @@ void HLexer::get_next( Token& token )
         case '!': {
             char c = (char) c_;
             is_.get(c_);
-            if(c_ == '=') {
+            if (c_ == '=') {
                 token.type = Tokentype::OpRelNEQ;
                 token.lexeme.push_back(c);
                 token.lexeme.push_back(c_);
                 is_.get(c_);
-            }
-            else {
+            } else {
                 token.type = Tokentype::OpLogNot;
                 token.lexeme.push_back(c);
             };
