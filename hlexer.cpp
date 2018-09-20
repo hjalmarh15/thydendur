@@ -27,16 +27,18 @@ void HLexer::get_next( Token& token )
     }
 
     switch ( c_ ) {
-        case '{':
+        case '{': {
             token.type = Tokentype::ptLBrace;
             token.lexeme.push_back(c_);
             is_.get(c_);
             break;
-        case '}':
+        }
+        case '}': {
             token.type = Tokentype::ptRBrace;
             token.lexeme.push_back(c_);
             is_.get(c_);
             break;
+        }
        case '(':
            token.type = Tokentype::ptLParen;
            token.lexeme.push_back(c_);
@@ -62,6 +64,42 @@ void HLexer::get_next( Token& token )
             token.lexeme.push_back(c_);
             is_.get(c_);
             break;
+        case ',':
+            token.type = Tokentype::ptComma;
+            token.lexeme.push_back(c_);
+            is_.get(c_);
+            break;
+        case '=': {
+            char c = c_;
+            is_.get(c_);
+
+            if(c_ == '=') {
+                token.type = Tokentype::OpRelEQ;
+                token.lexeme.push_back(c);
+                token.lexeme.push_back(c_);
+                is_.get(c_);
+            }
+            else {
+                token.type = Tokentype::OpAssign;
+                token.lexeme.push_back(c);
+            }
+            break;
+        }
+        case '!': {
+            char c = (char) c_;
+            is_.get(c_);
+            if(c_ == '=') {
+                token.type = Tokentype::OpRelNEQ;
+                token.lexeme.push_back(c);
+                token.lexeme.push_back(c_);
+                is_.get(c_);
+            }
+            else {
+                token.type = Tokentype::OpLogNot;
+                token.lexeme.push_back(c);
+            };
+            break;
+        }
         default:
             token.type = Tokentype::ErrUnknown;
             token.lexeme.push_back(c_);

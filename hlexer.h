@@ -13,6 +13,7 @@ public:
 private:
     char c_;
     int  line_no_;
+    
 };
 
 #endif //LEXER_HLEXER_H
