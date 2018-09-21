@@ -1,5 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" "/Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1"
--- Found FLEX: /usr/bin/flex (found version "2.5.35") 
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/hjelmut/Helmut/Skóli/4.ár/Thydendur/CLion projects/Project1/cmake-build-debug
