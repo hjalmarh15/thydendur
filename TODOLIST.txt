@@ -3,8 +3,8 @@
 	\/\*(.|\n)*\*\/   /* do nothing */
 {digit}+        { return Tokentype::IntValue;}
 {float}         { return Tokentype::RealValue;}
-"true"          { return Tokentype::BoolValue;}
-"false"         { return Tokentype::BoolValue;}
+    "true"          { return Tokentype::BoolValue;}
+    "false"         { return Tokentype::BoolValue;}
 	"{"             { return Tokentype::ptLBrace; }
 	"}"             { return Tokentype::ptRBrace; }
 	"("             { return Tokentype::ptLParen; }
@@ -15,34 +15,34 @@
 	","             { return Tokentype::ptComma; }
 	"=="            { return Tokentype::OpRelEQ; }
 	"!="            { return Tokentype::OpRelNEQ; }
-"<"             { return Tokentype::OpRelLT; }
-"<="            { return Tokentype::OpRelLTE; }
-">"             { return Tokentype::OpRelGT; }
-">="            { return Tokentype::OpRelGTE;}
-"++"            { return Tokentype::OpArtInc; }
-"--"            { return Tokentype::OpArtDec; }
-"+"             { return Tokentype::OpArtPlus; }
-"-"             { return Tokentype::OpArtMinus; }
-"*"             { return Tokentype::OpArtMult; }
+    "<"             { return Tokentype::OpRelLT; }
+    "<="            { return Tokentype::OpRelLTE; }
+    ">"             { return Tokentype::OpRelGT; }
+    ">="            { return Tokentype::OpRelGTE;}
+    "++"            { return Tokentype::OpArtInc; }
+    "--"            { return Tokentype::OpArtDec; }
+    "+"             { return Tokentype::OpArtPlus; }
+    "-"             { return Tokentype::OpArtMinus; }
+    "*"             { return Tokentype::OpArtMult; }
 	"/"             { return Tokentype::OpArtDiv; }
-"%"             { return Tokentype::OpArtModulus; }
-"&&"            { return Tokentype::OpLogAnd; }
-"||"            { return Tokentype::OpLogOr; }
+    "%"             { return Tokentype::OpArtModulus; }
+    "&&"            { return Tokentype::OpLogAnd; }
+    "||"            { return Tokentype::OpLogOr; }
 	"!"             { return Tokentype::OpLogNot; }
 	"="             { return Tokentype::OpAssign; }
-"class"         { return Tokentype::kwClass; }
-"static"        { return Tokentype::kwStatic; }
-"void"          { return Tokentype::kwVoid; }
-"if"            { return Tokentype::kwIf; }
-"else"          { return Tokentype::kwElse; }
-"for"           { return Tokentype::kwFor; }
-"return"        { return Tokentype::kwReturn; }
-"break"         { return Tokentype::kwBreak; }
-"continue"      { return Tokentype::kwContinue; }
-"int"           { return Tokentype::kwInt; }
-"real"          { return Tokentype::kwReal; }
-"bool"          { return Tokentype::kwBool; }
-[a-zA-z_][a-zA-z0-9_]*       { return Tokentype::Identifier; }
+    "class"         { return Tokentype::kwClass; }
+    "static"        { return Tokentype::kwStatic; }
+    "void"          { return Tokentype::kwVoid; }
+    "if"            { return Tokentype::kwIf; }
+    "else"          { return Tokentype::kwElse; }
+    "for"           { return Tokentype::kwFor; }
+    "return"        { return Tokentype::kwReturn; }
+    "break"         { return Tokentype::kwBreak; }
+    "continue"      { return Tokentype::kwContinue; }
+    "int"           { return Tokentype::kwInt; }
+    "real"          { return Tokentype::kwReal; }
+    "bool"          { return Tokentype::kwBool; }
+    [a-zA-z_][a-zA-z0-9_]*       { return Tokentype::Identifier; }
 .               { return Tokentype::ErrUnknown; }
 %%
 
