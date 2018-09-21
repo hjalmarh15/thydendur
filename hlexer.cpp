@@ -123,91 +123,78 @@ void HLexer::get_next( Token& token )
             is_.get(c_);
             break;
         case '=': {
-            char c = c_;
+            token.lexeme.push_back(c_);
             is_.get(c_);
-
             if (c_ == '=') {
                 token.type = Tokentype::OpRelEQ;
-                token.lexeme.push_back(c);
                 token.lexeme.push_back(c_);
                 is_.get(c_);
             } else {
                 token.type = Tokentype::OpAssign;
-                token.lexeme.push_back(c);
             }
             break;
         }
         case '!': {
-            char c = (char) c_;
+            token.lexeme.push_back(c_);
             is_.get(c_);
             if (c_ == '=') {
                 token.type = Tokentype::OpRelNEQ;
-                token.lexeme.push_back(c);
                 token.lexeme.push_back(c_);
                 is_.get(c_);
             } else {
                 token.type = Tokentype::OpLogNot;
-                token.lexeme.push_back(c);
             };
             break;
         }
         case '<': {
-            char c = (char) c_;
+            token.lexeme.push_back(c_);
             is_.get(c_);
             if(c_ == '=') {
                 token.type = Tokentype::OpRelLTE;
-                token.lexeme.push_back(c);
                 token.lexeme.push_back(c_);
                 is_.get(c_);
             }
             else {
                 token.type = Tokentype::OpRelLT;
-                token.lexeme.push_back(c);
             };
             break;
         }
         case '>': {
-            char c = (char) c_;
+            token.lexeme.push_back(c_);
             is_.get(c_);
             if(c_ == '=') {
                 token.type = Tokentype::OpRelGTE;
-                token.lexeme.push_back(c);
                 token.lexeme.push_back(c_);
                 is_.get(c_);
             }
             else {
                 token.type = Tokentype::OpRelGT;
-                token.lexeme.push_back(c);
             }
             break;
         }
         case '+': {
-            char c = c_;
+            token.lexeme.push_back(c_);
             is_.get(c_);
             if(c_ == '+') {
                 token.type = Tokentype::OpArtInc;
-                token.lexeme.push_back(c);
                 token.lexeme.push_back(c_);
                 is_.get(c_);
             }
             else {
                 token.type = Tokentype::OpArtPlus;
-                token.lexeme.push_back(c);
             }
             break;
         }
         case '-': {
-            char c = c_;
+            token.lexeme.push_back(c_);
             is_.get(c_);
             if(c_ == '-') {
                 token.type = Tokentype::OpArtDec;
-                token.lexeme.push_back(c);
                 token.lexeme.push_back(c_);
                 is_.get(c_);
             }
             else {
                 token.type = Tokentype::OpArtMinus;
-                token.lexeme.push_back(c);
             }
             break;
         }
@@ -220,6 +207,30 @@ void HLexer::get_next( Token& token )
             token.type = Tokentype::OpArtModulus;
             token.lexeme.push_back(c_);
             is_.get(c_);
+            break;
+        case '|':
+            token.lexeme.push_back(c_);
+            is_.get(c_);
+            if(c_ == '|') {
+                token.type = Tokentype::OpLogOr;
+                token.lexeme.push_back(c_);
+                is_.get(c_);
+            }
+            else {
+                token.type = Tokentype::ErrUnknown;
+            }
+            break;
+        case '&':
+            token.lexeme.push_back(c_);
+            is_.get(c_);
+            if(c_ == '&') {
+                token.type = Tokentype::OpLogAnd;
+                token.lexeme.push_back(c_);
+                is_.get(c_);
+            }
+            else {
+                token.type = Tokentype::ErrUnknown;
+            }
             break;
         default:
             if( isdigit(c_))
@@ -272,7 +283,7 @@ void HLexer::constructString(char c, Token& token) {
         token.type = Tokentype::kwReturn;
     else if(token.lexeme == "break")
         token.type = Tokentype::kwBreak;
-    else if(token.lexeme == "continue")
+    else if(token.lexeme == "continue"s)
         token.type = Tokentype::kwContinue;
     else if(token.lexeme == "int")
         token.type = Tokentype::kwInt;
@@ -280,6 +291,8 @@ void HLexer::constructString(char c, Token& token) {
         token.type = Tokentype::kwReal;
     else if(token.lexeme == "bool")
         token.type = Tokentype::kwBool;
+    else if(token.lexeme == "true" || token.lexeme == "false")
+        token.type = Tokentype::BoolValue;
     else
         token.type = Tokentype::Identifier;
 }
