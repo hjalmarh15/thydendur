@@ -10,6 +10,7 @@ digit [0-9]
 float [0-9]+\.[0-9]+([eE][+-]?[0-9]+)?
 
 %%  IntValue, RealValue, BoolValue,
+
 {ws}+             /* do nothing */
 \/\/.*            /* do nothing */
 \/\*(.|\n)*\*\/   /* do nothing */
@@ -63,4 +64,7 @@ float [0-9]+\.[0-9]+([eE][+-]?[0-9]+)?
 
 [a-zA-z_][a-zA-z0-9_]*       { return Tokentype::Identifier; }
 .               { return Tokentype::ErrUnknown; }
+
+<<EOF>>           {  return Tokentype::EOI; }
+
 %%
