@@ -1,7 +1,7 @@
     	{ws}+             /* do nothing */
 	\/\/.*            /* do nothing */
 	\/\*(.|\n)*\*\/   /* do nothing */
-{digit}+        { return Tokentype::IntValue;}
+    {digit}+        { return Tokentype::IntValue;}
 {float}         { return Tokentype::RealValue;}
 "true"          { return Tokentype::BoolValue;}
 "false"         { return Tokentype::BoolValue;}
