@@ -152,9 +152,19 @@ void HLexer::get_next( Token& token )
             break;
         }
         default:
-            token.type = Tokentype::ErrUnknown;
-            token.lexeme.push_back(c_);
-            is_.get(c_);
+            if( isdigit(c_))
+            {
+                while(is_.good() && isdigit(c_)) {
+                    token.type = Tokentype::IntValue;
+                    token.lexeme.push_back(c_);
+                    c_ = is_.get();
+                }
+            }
+            else{
+                token.type = Tokentype::ErrUnknown;
+                token.lexeme.push_back(c_);
+                is_.get(c_);
+            }
             break;
     }
 }
