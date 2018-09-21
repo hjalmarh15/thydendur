@@ -13,7 +13,7 @@ public:
 private:
     char c_;
     int  line_no_;
-    
+    void constructString(char c, Token& token);
 };
 
 #endif //LEXER_HLEXER_H
