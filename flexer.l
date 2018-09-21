@@ -7,7 +7,7 @@
 %}
 ws [ \t\r\n]
 digit [0-9]
-float [0-9]+.[0-9]+[eE][0-9]+|[0-9]+[eE][0-9]+|[0-9]+.[0-9]+
+float [0-9]+\.[0-9]+([eE][+-]?[0-9]+)?
 
 %%  IntValue, RealValue, BoolValue,
 {ws}+             /* do nothing */
