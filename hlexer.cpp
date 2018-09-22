@@ -235,11 +235,8 @@ void HLexer::get_next( Token& token )
         default:
             if( isdigit(c_))
             {
-                while(is_.good() && isdigit(c_)) {
-                    token.type = Tokentype::IntValue;
-                    token.lexeme.push_back(c_);
-                    c_ = is_.get();
-                }
+                constructNumber(token);
+                break;
             }
             else if(isalpha(c_) || c_ == '_') {
                 char c = c_;
@@ -296,6 +293,43 @@ void HLexer::constructString(char c, Token& token) {
     else
         token.type = Tokentype::Identifier;
 }
+
+void HLexer::constructNumber(Token& token) {
+
+    //token.type = Tokentype::IntValue;
+    while(is_.good() && isdigit(c_)) {
+        token.lexeme.push_back(c_);
+        is_.get(c_);
+        if(c_ == '.'){
+            token.type == Tokentype::RealValue;
+            constructFraction(token);
+            return;
+        }
+    }
+
+    token.type = Tokentype::IntValue;
+}
+
+void HLexer::constructFraction(Token& token) {
+    token.type == Tokentype::RealValue;
+    token.lexeme.push_back(c_);
+    is_.get(c_);
+    //Already have the '.' in lexeme, now loop until not digit anymore
+    while(is_.good() && isdigit(c_)) {
+        token.lexeme.push_back(c_);
+        is_.get(c_);
+    }
+    //Check exponent part
+    if(c_ == 'E' || c_ == 'e'){
+        token.lexeme.push_back(c_);
+        is_.get(c_);
+        while(is_.good() && isdigit(c_)) {
+            token.lexeme.push_back(c_);
+            is_.get(c_);
+        }
+    }
+}
+
 HLexer::~HLexer()
 {
 }
