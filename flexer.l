@@ -23,8 +23,8 @@ float [0-9]+\.[0-9]+([eE][+-]?[0-9]+)?
 "}"             { return Tokentype::ptRBrace; }
 "("             { return Tokentype::ptLParen; }
 ")"             { return Tokentype::ptRParen; }
-"["             { return Tokentype::ptLBracket; }
-"]"             { return Tokentype::ptRBracket; }
+"\["             { return Tokentype::ptLBracket; }
+"\]"             { return Tokentype::ptRBracket; }
 ";"             { return Tokentype::ptSemicolon; }
 ","             { return Tokentype::ptComma; }
 
@@ -62,7 +62,7 @@ float [0-9]+\.[0-9]+([eE][+-]?[0-9]+)?
 "real"          { return Tokentype::kwReal; }
 "bool"          { return Tokentype::kwBool; }
 
-[a-zA-z_][a-zA-z0-9_]*       { return Tokentype::Identifier; }
+[a-zA-Z_][a-zA-Z0-9_]*       { return Tokentype::Identifier; }
 .               { return Tokentype::ErrUnknown; }
 
 <<EOF>>           {  return Tokentype::EOI; }
