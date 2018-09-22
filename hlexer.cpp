@@ -15,17 +15,15 @@ void HLexer::get_next( Token& token )
 {
     token.lexeme.clear();
 
-    while ( is_.good() && isspace(c_) ) {
-        if ( c_ == '\n' ) { ++line_no_; }
-        is_.get(c_);
-    }
+    consumeWhitespace();
 
-    if(c_ == '/')
+    while(c_ == '/')
     {
         char c = c_;
         is_.get(c_);
         if(c_ == '*')
         {
+            is_.get(c_);
             while ( is_.good())
             {
                 if( c_ == '\n' )
@@ -55,7 +53,6 @@ void HLexer::get_next( Token& token )
             {
                 if( c_ == '\n' )
                 {
-                    ++line_no_;
                     break;
                 }
                 is_.get(c_);
@@ -68,8 +65,10 @@ void HLexer::get_next( Token& token )
         {
             token.type = Tokentype::OpArtDiv;
             token.lexeme.push_back(c);
+
+            return;
         }
-        return;
+        consumeWhitespace();
     }
 
     token.line = line_no_;
@@ -256,6 +255,13 @@ std::string HLexer::get_name() const {
     return "handmade";
 }
 
+void HLexer::consumeWhitespace(){
+    while ( is_.good() && isspace(c_) ) {
+        if ( c_ == '\n' ) { ++line_no_; }
+        is_.get(c_);
+    }
+}
+
 void HLexer::constructString(char c, Token& token) {
     token.lexeme.push_back(c);
     is_.get(c_);
@@ -295,23 +301,20 @@ void HLexer::constructString(char c, Token& token) {
 }
 
 void HLexer::constructNumber(Token& token) {
-
-    //token.type = Tokentype::IntValue;
+    token.type = Tokentype::IntValue;
     while(is_.good() && isdigit(c_)) {
         token.lexeme.push_back(c_);
         is_.get(c_);
         if(c_ == '.'){
-            token.type == Tokentype::RealValue;
+            token.type = Tokentype::RealValue;
             constructFraction(token);
-            return;
+
         }
     }
 
-    token.type = Tokentype::IntValue;
 }
 
 void HLexer::constructFraction(Token& token) {
-    token.type == Tokentype::RealValue;
     token.lexeme.push_back(c_);
     is_.get(c_);
     //Already have the '.' in lexeme, now loop until not digit anymore

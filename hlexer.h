@@ -16,6 +16,7 @@ private:
     void constructString(char c, Token& token);
     void constructNumber(Token& token);
     void constructFraction(Token& token);
+    void consumeWhitespace();
 };
 
 #endif //LEXER_HLEXER_H
