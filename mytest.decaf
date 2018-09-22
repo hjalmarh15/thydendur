@@ -1,0 +1,38 @@
+class Program {
+    //this is a test program for our lexer
+
+    /*
+    this is a
+    multiline
+    comment
+    */
+
+    int i,j;
+    real number;
+    bool boolean;
+
+    int result;
+
+    static void main() {
+        int arr[5];
+        i = 0;
+        j = 1;
+        number = 12.34E7;
+        if(i == 0 || j != 0) {
+            i++;
+        }
+        else if(i <= 3 && i > 5 || j < 4 || i >= 6) {
+            j--;
+            i = j - 3;
+            arr[2] = (i * j)/3;
+            if(!i) {
+                boolean = true;
+            }
+            else if(i % 2 == 0){
+                boolean = false;
+            }
+        }
+
+        result = i + j + i * j + 100;
+    }
+}
