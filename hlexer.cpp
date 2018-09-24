@@ -9,8 +9,6 @@ HLexer::HLexer( std::istream& is  )
     is_.get( c_ );
 }
 
-//TODO Ekki gleyma að prófa deilingu í flexer!!!
-
 void HLexer::get_next( Token& token )
 {
     token.lexeme.clear();
@@ -81,7 +79,7 @@ void HLexer::get_next( Token& token )
     }
 
     //switch case for different single character tokens.
-    //Some of them need to check the next token, i.e. != and &&
+    //Some of them need to check the next token, e.g. != and &&
     switch ( c_ ) {
         case '{': {
             token.type = Tokentype::ptLBrace;
