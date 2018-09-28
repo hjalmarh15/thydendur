@@ -9,14 +9,14 @@ HLexer::HLexer( std::istream& is  )
     is_.get( c_ );
 }
 
-//TODO Ekki gleyma að prófa deilingu í flexer!!!
-
 void HLexer::get_next( Token& token )
 {
     token.lexeme.clear();
 
     consumeWhitespace();
 
+
+    //check for comments.
     while(c_ == '/')
     {
         char c = c_;
@@ -78,6 +78,8 @@ void HLexer::get_next( Token& token )
         return;
     }
 
+    //switch case for different single character tokens.
+    //Some of them need to check the next token, e.g. != and &&
     switch ( c_ ) {
         case '{': {
             token.type = Tokentype::ptLBrace;
@@ -232,11 +234,13 @@ void HLexer::get_next( Token& token )
             }
             break;
         default:
+            //if we get a number we see if it's an int or a real value
             if( isdigit(c_))
             {
                 constructNumber(token);
                 break;
             }
+            //if we get a letter or _ we construct the following string
             else if(isalpha(c_) || c_ == '_') {
                 char c = c_;
                 constructString(c,token );
@@ -262,6 +266,11 @@ void HLexer::consumeWhitespace(){
     }
 }
 
+
+/*
+ * This function constructs a string and then compares it to known keywords
+ * If no keyword is found, the string is an identifier.
+ */
 void HLexer::constructString(char c, Token& token) {
     token.lexeme.push_back(c);
     is_.get(c_);
@@ -300,6 +309,10 @@ void HLexer::constructString(char c, Token& token) {
         token.type = Tokentype::Identifier;
 }
 
+
+/*
+ * This function constructs a number. If the . is found, we construct a fraction
+ */
 void HLexer::constructNumber(Token& token) {
     token.type = Tokentype::IntValue;
     while(is_.good() && isdigit(c_)) {
@@ -314,6 +327,10 @@ void HLexer::constructNumber(Token& token) {
 
 }
 
+
+/*
+ * Constructs a fraction if . is found in a number. Can have optional exponent
+ */
 void HLexer::constructFraction(Token& token) {
     token.lexeme.push_back(c_);
     is_.get(c_);
