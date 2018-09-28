@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
     if ( argc >= 2 && string(argv[1]) == "-f" ) {
         use_flex = true;
     }
-    string filename( "test.decaf" );
+    string filename( "mytest.decaf" );
     if ( argc >= 3 ) {
         filename = argv[2];
     }
@@ -34,7 +34,6 @@ int main(int argc, char* argv[]) {
     else {
         lexer = new HLexer(fis);
     }
-    lexer = new FLexer(fis);
 
 
     // Output tokens.
