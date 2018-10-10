@@ -101,7 +101,7 @@ private:
             get_next( token_ );
         }
         else { error( type ); }
-    }
+    }mat
 
 public:
 
@@ -128,5 +128,7 @@ private:
     std::list<VariableNode*>* variable_list();
     VariableNode* variable();
     ValueType type();
+    std::list<MethodNode*>* method_declarations();
+    MethodNode* method_declaration();
 };
 #endif //DECAFPARSER_HPARSER_H

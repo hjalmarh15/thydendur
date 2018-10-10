@@ -16,9 +16,10 @@ HParser::program() {
     match( decaf::token_type::Identifier );
     match( decaf::token_type::ptLBrace );
     auto list_vdn = variable_declarations();
+    auto list_mdn = method_declarations();
     match( decaf::token_type::ptRBrace );
     match( decaf::token_type::EOI );
-    return new ProgramNode(name, list_vdn, nullptr);
+    return new ProgramNode(name, list_vdn, list_mdn);
 }
 
 
@@ -52,8 +53,12 @@ ValueType HParser::type()
         match( decaf::token_type::kwBool );
         valuetype = ValueType::BoolVal;
     }
+    else if( token_.type == decaf::token_type::kwVoid) {
+        match(decaf::token_type::kwVoid);
+        valuetype = ValueType ::VoidVal;
+    }
     else {
-       error( decaf::token_type::kwInt );
+       //rror( decaf::token_type::kwVoid );
     }
     return valuetype;
 }
@@ -89,3 +94,32 @@ HParser::variable()
     }
     return new VariableNode( id, dim );
 }
+
+list<MethodNode*>* HParser::method_declarations() {
+
+    auto list_mdn = new list<MethodNode*>();
+    list_mdn->push_back(method_declaration());
+    while ( token_.type == decaf::token_type::ptComma ) {
+        match( decaf::token_type::ptComma );
+        list_mdn->push_back( method_declaration() );
+    }
+    match( decaf::token_type::ptSemicolon );
+    return list_mdn;
+}
+
+MethodNode* HParser::method_declaration() {
+        ValueType type = this->type();
+        string id = token_.lexeme;
+        return new MethodNode(type, id, nullptr , variable_declarations(), nullptr );
+}
+
+/*
+method_declaration::= static  method_return_type id( parameters){variable_declarationsstatement_list}
+protected:
+ValueType return_type_;
+std::string id_;
+synstd::list<ParameterNode*> *params_;
+std::list<VariableDeclarationNode*> *vars_decl_;
+std::list<StmNode*> *stms_;
+};
+ */
