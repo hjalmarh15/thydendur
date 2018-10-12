@@ -113,8 +113,8 @@ list<MethodNode*>* HParser::method_declarations() {
 MethodNode* HParser::method_declaration() {
 
         match(decaf::token_type::kwStatic);
-        std::string id = token_.lexeme;
         ValueType return_type = this->type();
+        std::string id = token_.lexeme;
         match(decaf::token_type::Identifier);
         match(decaf::token_type::ptLParen);
         auto list_param = parameters();
