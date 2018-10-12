@@ -58,7 +58,7 @@ ValueType HParser::type()
         valuetype = ValueType ::VoidVal;
     }
     else {
-       //rror( decaf::token_type::kwVoid );
+       error(decaf::token_type::kwInt);
     }
     return valuetype;
 }
@@ -98,24 +98,57 @@ HParser::variable( string id )
 }
 
 
-list<MethodNode*>* HParser::method_declarations() {
 
+list<MethodNode*>* HParser::method_declarations() {
     auto list_mdn = new list<MethodNode*>();
     list_mdn->push_back(method_declaration());
     while ( token_.type == decaf::token_type::ptComma ) {
         match( decaf::token_type::ptComma );
         list_mdn->push_back( method_declaration() );
     }
-    match( decaf::token_type::ptSemicolon );
     return list_mdn;
+
 }
 
 MethodNode* HParser::method_declaration() {
-        ValueType type = this->type();
-        string id = token_.lexeme;
-        return new MethodNode(type, id, nullptr , variable_declarations(), nullptr );
+
+        match(decaf::token_type::kwStatic);
+        std::string id = token_.lexeme;
+        ValueType return_type = this->type();
+        match(decaf::token_type::Identifier);
+        match(decaf::token_type::ptLParen);
+        auto list_param = parameters();
+        match(decaf::token_type::ptRParen);
+        match(decaf::token_type::ptLBrace);
+        auto list_vdn = variable_declarations();
+        auto list_stm = statement_list();
+        match(decaf::token_type::ptRBrace);
+        return new MethodNode(return_type, id, list_param, list_vdn, list_stm );
 }
 
+list<ParameterNode*> *HParser::parameters() {
+    auto list_param = new list<ParameterNode*>();
+    parameter_list(list_param);
+
+    while( token_.type == decaf::token_type::ptComma ) {
+            match(decaf::token_type::ptComma);
+            parameter_list(list_param);
+    }
+    return list_param;
+}
+
+void HParser::parameter_list(list<ParameterNode*>* list_param) {
+    while(token_.type == decaf::token_type::kwInt ||
+          token_.type == decaf::token_type::kwReal ||
+          token_.type == decaf::token_type::kwBool) {
+        ValueType type = this->type();
+        VariableNode* var = variable();
+        list_param->push_back(new ParameterNode(type, var));
+    }
+}
+list<StmNode*> *HParser::statement_list() {
+    return new list<StmNode*>();
+}
 /*
 method_declaration::= static  method_return_type id( parameters){variable_declarationsstatement_list}
 protected:

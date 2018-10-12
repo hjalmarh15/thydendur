@@ -9,12 +9,13 @@ class Program {
     bool b;
     int a[10];
 
-    /* Commented out for new, until parser can handle the code.
-    static int myFunc( int n ) {
-        n = n * 2.1E-3;
-        return n;
-    }
 
+    static int myFunc( int n, bool test, real rl) {
+        /*n = n * 2.1E-3;
+        return n;
+        */
+    }
+/* Commented out for new, until parser can handle the code.
     static void main() {
        int n;
 

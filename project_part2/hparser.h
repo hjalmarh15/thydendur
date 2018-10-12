@@ -130,5 +130,8 @@ private:
     ValueType type();
     std::list<MethodNode*>* method_declarations();
     MethodNode* method_declaration();
+    std::list<ParameterNode*> *parameters();
+    std::list<StmNode*> *statement_list();
+    void parameter_list(std::list<ParameterNode*>* list_param);
 };
 #endif //DECAFPARSER_HPARSER_H
