@@ -16,6 +16,7 @@ inline std::string tostr( ValueType t ) {
         case ValueType::RealVal: return "real";
         case ValueType::BoolVal: return "bool";
     }
+    return "";
 }
 
 class Node {
@@ -257,21 +258,7 @@ protected:
 };
 
 
-class VariableExprNode : public ExprNode {
-public:
-    explicit VariableExprNode( const std::string& id ) : id_(id) {}
-
-    virtual const std::string str( ) const override {
-        return std::string("(VAR ") + id_ + ')';
-    }
-
-protected:
-    std::string id_;
-};
-
-/////////////////////////////////////////////////////////////////////////////////
-
-class VariableNode : public Node
+class VariableNode : public ExprNode
 {
 public:
     VariableNode( int dim = 0 ) {
@@ -293,10 +280,15 @@ protected:
     int dim_;  // dimension > 0 means an array.
 };
 
+typedef VariableNode VariableExprNode;
+
+
+/////////////////////////////////////////////////////////////////////////////////
+
 class VariableDeclarationNode : public Node
 {
 public:
-    VariableDeclarationNode( ValueType type, std::list<VariableNode*>* vars )
+    VariableDeclarationNode( ValueType type, std::list<VariableExprNode*>* vars )
             : type_(type), vars_(vars) {}
 
     virtual const std::string str( ) const override {
@@ -310,7 +302,7 @@ public:
 
 protected:
     ValueType type_;
-    const std::list<VariableNode*>* vars_;
+    const std::list<VariableExprNode*>* vars_;
 };
 
 
@@ -556,8 +548,8 @@ protected:
 class ProgramNode : public Node {
 public:
     ProgramNode( std::string id,
-                std::list<VariableDeclarationNode*> *var_decls,
-                std::list<MethodNode*> *method_decls )
+                 std::list<VariableDeclarationNode*> *var_decls,
+                 std::list<MethodNode*> *method_decls )
             : id_(id), var_decls_(var_decls), method_decls_(method_decls) {}
 
     virtual const std::string str( ) const override {

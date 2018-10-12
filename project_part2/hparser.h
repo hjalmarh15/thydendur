@@ -101,7 +101,7 @@ private:
             get_next( token_ );
         }
         else { error( type ); }
-    }mat
+    }
 
 public:
 
@@ -126,7 +126,7 @@ private:
     ProgramNode* program();
     std::list<VariableDeclarationNode*>* variable_declarations();
     std::list<VariableNode*>* variable_list();
-    VariableNode* variable();
+    VariableNode* variable( std::string id = "" );
     ValueType type();
     std::list<MethodNode*>* method_declarations();
     MethodNode* method_declaration();

@@ -79,11 +79,13 @@ HParser::variable_list()
 
 
 VariableNode*
-HParser::variable()
+HParser::variable( string id )
 {
-    string id = token_.lexeme;
+    if ( id.empty() ) {
+        id = token_.lexeme;
+        match( decaf::token_type::Identifier );
+    }
     int dim = 0;
-    match( decaf::token_type::Identifier );
     if ( token_.type == decaf::token_type::ptLBracket ) {
         match( decaf::token_type::ptLBracket );
         if ( token_.type == decaf::token_type::IntValue) {
@@ -94,6 +96,7 @@ HParser::variable()
     }
     return new VariableNode( id, dim );
 }
+
 
 list<MethodNode*>* HParser::method_declarations() {
 
