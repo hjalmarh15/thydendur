@@ -133,5 +133,28 @@ private:
     std::list<ParameterNode*> *parameters();
     std::list<StmNode*> *statement_list();
     void parameter_list(std::list<ParameterNode*>* list_param);
+    StmNode* statement();
+    StmNode* id_start_stm();
+    ExprNode*  optional_expression();
+    BlockStmNode* statement_block();
+    BlockStmNode* optional_else();
+    std::list<ExprNode*> *expr_list();
+    std::list<ExprNode*> *more_expr(std::list<ExprNode*>* lst);
+    ExprNode* expression();
+    ExprNode* expression_pr(ExprNode* lhs_expr);
+    ExprNode* expression_and();
+    ExprNode* expression_and_pr(ExprNode* lhs_expr);
+    ExprNode* expression_eq();
+    ExprNode* expression_eq_pr(ExprNode* lhs_expr);
+    ExprNode* expression_rel();
+    ExprNode* expression_rel_pr(ExprNode* lhs_expr);
+    ExprNode* expression_add();
+    ExprNode* expression__add_pr(ExprNode* lhs_expr);
+    ExprNode* expression_mult();
+    ExprNode* expression_mult_pr(ExprNode* lhs_expr);
+    ExprNode* expression_unary();
+    ExprNode* factor();
+
+
 };
 #endif //DECAFPARSER_HPARSER_H
