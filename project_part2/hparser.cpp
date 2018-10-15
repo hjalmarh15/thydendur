@@ -101,17 +101,18 @@ HParser::variable( string id )
 
 list<MethodNode*>* HParser::method_declarations() {
     auto list_mdn = new list<MethodNode*>();
-    list_mdn->push_back(method_declaration());
-    while ( token_.type == decaf::token_type::ptComma ) {
-        match( decaf::token_type::ptComma );
-        list_mdn->push_back( method_declaration() );
+    auto meth_dec = method_declaration();
+    list_mdn->push_back(meth_dec);
+
+    while ( token_.type == decaf::token_type::kwStatic) {
+        meth_dec = method_declaration();
+        list_mdn->push_back(meth_dec);
     }
     return list_mdn;
 
 }
 
 MethodNode* HParser::method_declaration() {
-
         match(decaf::token_type::kwStatic);
         ValueType return_type = this->type();
         std::string id = token_.lexeme;
@@ -162,7 +163,6 @@ list<StmNode*> *HParser::statement_list() {
         //match(token_.type);
         stm_list->push_back(statement());
     }
-
     return stm_list;
 }
 
@@ -175,7 +175,7 @@ StmNode* HParser::statement(){
         match(decaf::token_type::ptRParen);
         auto stm_block = statement_block();
         auto else_block = optional_else();
-        stm_node = new IfStmNode(expr, stm_block, statement_block());
+        stm_node = new IfStmNode(expr, stm_block, optional_else());
 
     }
     else if(token_.type == decaf::token_type::kwFor){
@@ -209,13 +209,16 @@ StmNode* HParser::statement(){
 
 StmNode* HParser::id_start_stm(){
     StmNode* stm_nd;
-    if(token_.type == decaf::token_type::Identifier){
-        //match(decaf::token_type::ptLParen);
-        string id = token_.lexeme;
+    string id = token_.lexeme;
+    match( decaf::token_type::Identifier );
+
+    if(token_.type == decaf::token_type::ptLParen){
+        match(decaf::token_type::ptLParen);
         stm_nd = new MethodCallExprStmNode(id, expr_list());
+        match(decaf::token_type::ptRParen);
     }
     else{
-        auto var = variable();
+        auto var = variable(id);
         if (token_.type == decaf::token_type::OpArtInc) {
             match(decaf::token_type::OpArtInc);
             stm_nd = new IncrStmNode(var);
@@ -228,6 +231,7 @@ StmNode* HParser::id_start_stm(){
             match(decaf::token_type::OpAssign);
             stm_nd = new AssignStmNode(var, expression());
         }
+        match(decaf::token_type::ptSemicolon);
     }
     return stm_nd;
 }
@@ -255,13 +259,14 @@ BlockStmNode* HParser::optional_else() {
 std::list<ExprNode*> *HParser::expr_list(){
     auto lst = new list<ExprNode*>();
     lst->push_back(expression());
-    more_expr(lst);
-    return nullptr;
+    return more_expr(lst);;
 }
-std::list<ExprNode*> *HParser::more_expr(std::list<ExprNode*>* lst){
-    match(decaf::token_type::ptComma);
-    lst->push_back(expression());
-    return nullptr;
+std::list<ExprNode*> *HParser::more_expr(std::list<ExprNode*>* lst) {
+    if (token_.type == decaf::token_type::ptComma){
+        match(decaf::token_type::ptComma);
+        lst->push_back(expression());
+    }
+    return lst;
 }
 
 ExprNode* HParser::expression(){
@@ -393,11 +398,12 @@ ExprNode* HParser::expression_unary(){
 
 
 ExprNode* HParser::factor(){
-    if(token_.type == decaf::token_type::kwInt ||
-       token_.type == decaf::token_type::kwReal ||
-       token_.type == decaf::token_type::kwBool ) {
-        ValueType type = this->type();
-        return new ValueExprNode(tostr(type));
+    if(token_.type == decaf::token_type::IntValue ||
+       token_.type == decaf::token_type::RealValue ||
+       token_.type == decaf::token_type::BoolValue) {
+        auto val = token_.lexeme;
+        match(token_.type);
+        return new ValueExprNode(val);
     }
     else if(token_.type == decaf::token_type::ptLParen){
         match(decaf::token_type::ptLParen);
@@ -405,10 +411,20 @@ ExprNode* HParser::factor(){
         match(decaf::token_type::ptRParen);
         return expr;
     }
-    else if(token_.type == decaf::token_type::Identifier){
-        match(decaf::token_type::Identifier);
-        match(decaf::token_type::OpAssign);
-
+    else{
+        ExprNode* expr_nd;
+        string id = token_.lexeme;
+        match( decaf::token_type::Identifier );
+        cout << "factor" << " " << token_.line << " " << token_.col << endl;
+        if(token_.type == decaf::token_type::ptLParen){
+            match(decaf::token_type::ptLParen);
+            expr_nd = new MethodCallExprStmNode(id, expr_list());
+            match(decaf::token_type::ptRParen);
+        }
+        else{
+            expr_nd = variable(id);
+        }
+        return expr_nd;
     }
 }
 
