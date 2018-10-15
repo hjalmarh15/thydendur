@@ -226,10 +226,7 @@ value: IntValue {$$ = $1;}
      | RealValue {$$ = $1;}
      | BoolValue {$$ = $1;}
 %%
-
 ////////////////////////////////////////////////////////////////////////////////////
-
-
 void yy::parser_decaf::error(const yy::location& l, const std::string& m)
 {
     std::cerr << l << ": " << m << std::endl;
