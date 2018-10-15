@@ -189,8 +189,7 @@ StmNode* HParser::statement(){
         match(decaf::token_type::ptSemicolon);
         auto expr2 = expression();
         match(decaf::token_type::ptSemicolon);
-        cout << " in for" << endl;
-        auto var = variable();
+                auto var = variable();
         IncrDecrStmNode* incr_decr;
         if (token_.type == decaf::token_type::OpArtInc) {
             match(decaf::token_type::OpArtInc);
@@ -283,8 +282,7 @@ BlockStmNode* HParser::statement_block(){
     match(decaf::token_type::ptLBrace);
     auto stm_block = new BlockStmNode(statement_list());
     match(decaf::token_type::ptRBrace);
-    cout << "in statement_block" << endl;
-    return stm_block;
+        return stm_block;
 }
 
 BlockStmNode* HParser::optional_else() {
@@ -474,8 +472,7 @@ ExprNode* HParser::factor(){
         ExprNode* expr_nd;
         string id = token_.lexeme;
         match( decaf::token_type::Identifier );
-        cout << "factor" << " " << token_.line << " " << token_.col << endl;
-        if(token_.type == decaf::token_type::ptLParen){
+                if(token_.type == decaf::token_type::ptLParen){
             match(decaf::token_type::ptLParen);
             expr_nd = new MethodCallExprStmNode(id, expr_list());
             match(decaf::token_type::ptRParen);
