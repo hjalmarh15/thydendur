@@ -321,7 +321,7 @@ ExprNode* HParser::expression_pr(ExprNode* lhs_expr){
 }
 ExprNode* HParser::expression_and(){
     auto lhs_expr = expression_eq();
-    return expression__add_pr(lhs_expr);
+    return expression_and_pr(lhs_expr);
 }
 ExprNode* HParser::expression_and_pr(ExprNode* lhs_expr){
     if(token_.type == decaf::token_type::OpLogAnd){
@@ -400,17 +400,17 @@ ExprNode* HParser::expression_mult_pr(ExprNode* lhs_expr){
     if(token_.type == decaf::token_type::OpArtMult){
         match(decaf::token_type::OpArtMult);
         auto rhs_expr = expression_unary();
-        return expression__add_pr(new MultiplyExprNode(lhs_expr, rhs_expr));
+        return expression_mult_pr(new MultiplyExprNode(lhs_expr, rhs_expr));
     }
     else if(token_.type == decaf::token_type::OpArtDiv){
         match(decaf::token_type::OpArtDiv);
         auto rhs_expr = expression_unary();
-        return expression__add_pr(new DivideExprNode(lhs_expr, rhs_expr));
+        return expression_mult_pr(new DivideExprNode(lhs_expr, rhs_expr));
     }
     else if(token_.type == decaf::token_type::OpArtModulus){
         match(decaf::token_type::OpArtModulus);
         auto rhs_expr = expression_unary();
-        return expression__add_pr(new ModulusExprNode(lhs_expr, rhs_expr));
+        return expression_mult_pr(new ModulusExprNode(lhs_expr, rhs_expr));
     }
     return lhs_expr;
 }
