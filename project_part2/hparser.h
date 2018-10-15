@@ -135,7 +135,6 @@ private:
     void parameter_list(std::list<ParameterNode*>* list_param);
     StmNode* statement();
     StmNode* id_start_stm();
-    StmNode* op_incr_decr();
     ExprNode*  optional_expression();
     BlockStmNode* statement_block();
     BlockStmNode* optional_else();
