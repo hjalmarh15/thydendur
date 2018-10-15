@@ -68,6 +68,14 @@ class Parser;
 %token OpLogOr
 %token OpLogNot
 
+
+%left OpLogOr
+%left OpLogAnd
+%left OpLogNot
+%left OpRelEQ OpRelNEQ OpRelLT OpRelLTE OpRelGTE OpRelGT
+%left OpArtPlus OpArtMinus
+%left OpArtMult OpArtMod OpArtDiv
+
 %token <std::string> Identifier
 %token <std::string> IntValue
 %token <std::string> RealValue
@@ -94,8 +102,9 @@ class Parser;
 %type <std::list<ExprNode*>*> more_expressions
 %type <ExprNode*> expression
 %type <std::string> value
-%%
 
+
+%%
 ////////////////////////////////////////////////////////////////////////////////////
 
 program: kwClass Identifier ptLBrace
@@ -175,7 +184,7 @@ optional_else : kwElse statement_block { $$ = $2;}
               | {$$ = nullptr;}
 
 
-expression_list : expression more_expressions { $$ = $2; $$->push_front($1);}
+expression_list : expression more_expressions { $$ = $2; $$->push_back($1);}
                 | {$$ = new std::list<ExprNode*>();}
 
 more_expressions : ptComma expression more_expressions {$$ = $3; $$->push_back($2);}

@@ -437,16 +437,6 @@ ExprNode* HParser::expression_unary(){
 
 
 ExprNode* HParser::factor(){
-    /*
-}
-<<<<<<< HEAD
-    if(token_.type == decaf::token_type::IntValue ||
-       token_.type == decaf::token_type::RealValue ||
-       token_.type == decaf::token_type::BoolValue) {
-        auto val = token_.lexeme;
-        match(token_.type);
-        return new ValueExprNode(val);
-=======*/
     if(token_.type == decaf::token_type::BoolValue) {
         auto val = token_.lexeme;
         match(token_.type);
