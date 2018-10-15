@@ -180,6 +180,30 @@ StmNode* HParser::statement(){
     }
     else if(token_.type == decaf::token_type::kwFor){
 
+        match(decaf::token_type::kwFor);
+        match(decaf::token_type::ptLParen);
+        auto var1 = variable();
+        match(decaf::token_type::OpAssign);
+        auto expr1 = expression();
+        AssignStmNode* assign = new AssignStmNode(var1, expr1);
+        match(decaf::token_type::ptSemicolon);
+        auto expr2 = expression();
+        match(decaf::token_type::ptSemicolon);
+        cout << " in here" << endl;
+        auto var = variable();
+        IncrDecrStmNode* incr_decr;
+        if (token_.type == decaf::token_type::OpArtInc) {
+            match(decaf::token_type::OpArtInc);
+            incr_decr = new IncrStmNode(var);
+        }
+        else if(token_.type == decaf::token_type::OpArtDec) {
+            match(decaf::token_type::OpArtDec);
+            incr_decr = new DecrStmNode(var);
+        }
+        match(decaf::token_type::ptRParen);
+        auto stm_block = statement_block();
+        stm_node = new ForStmNode(assign, expr2, incr_decr, stm_block);
+
     }
     else if(token_.type == decaf::token_type::kwReturn){
         match(decaf::token_type::kwReturn);
@@ -230,12 +254,25 @@ StmNode* HParser::id_start_stm(){
         else{
             match(decaf::token_type::OpAssign);
             stm_nd = new AssignStmNode(var, expression());
+
         }
         match(decaf::token_type::ptSemicolon);
+
     }
     return stm_nd;
 }
 
+StmNode* HParser::op_incr_decr() {
+    auto var = variable();
+    if (token_.type == decaf::token_type::OpArtInc) {
+        match(decaf::token_type::OpArtInc);
+        return new IncrStmNode(var);
+    }
+    else if (token_.type == decaf::token_type::OpArtDec) {
+        match(decaf::token_type::OpArtDec);
+        return new DecrStmNode(var);
+    }
+}
 ExprNode*  HParser::optional_expression(){
     if(token_.type != decaf::token_type::ptSemicolon)
         return expression();
@@ -245,8 +282,10 @@ ExprNode*  HParser::optional_expression(){
 
 BlockStmNode* HParser::statement_block(){
     match(decaf::token_type::ptLBrace);
-    statement_list();
+    auto stm_block = new BlockStmNode(statement_list());
     match(decaf::token_type::ptRBrace);
+    cout << "in here" << endl;
+    return stm_block;
 }
 
 BlockStmNode* HParser::optional_else() {
@@ -261,8 +300,9 @@ std::list<ExprNode*> *HParser::expr_list(){
     lst->push_back(expression());
     return more_expr(lst);;
 }
-std::list<ExprNode*> *HParser::more_expr(std::list<ExprNode*>* lst) {
-    if (token_.type == decaf::token_type::ptComma){
+
+std::list<ExprNode*> *HParser::more_expr(std::list<ExprNode*>* lst){
+    while(token_.type == decaf::token_type::ptComma) {
         match(decaf::token_type::ptComma);
         lst->push_back(expression());
     }
@@ -393,14 +433,34 @@ ExprNode* HParser::expression_unary(){
         auto rhs_expr = expression_unary();
         return new NotExprNode(rhs_expr);
     }
+
+
     return factor();
 }
 
 
 ExprNode* HParser::factor(){
+    /*
+}
+<<<<<<< HEAD
     if(token_.type == decaf::token_type::IntValue ||
        token_.type == decaf::token_type::RealValue ||
        token_.type == decaf::token_type::BoolValue) {
+        auto val = token_.lexeme;
+        match(token_.type);
+        return new ValueExprNode(val);
+=======*/
+    if(token_.type == decaf::token_type::BoolValue) {
+        auto val = token_.lexeme;
+        match(token_.type);
+        return new ValueExprNode(val);
+    }
+    else if(token_.type == decaf::token_type::RealValue) {
+        auto val = token_.lexeme;
+        match(token_.type);
+        return new ValueExprNode(val);
+    }
+    else if(token_.type == decaf::token_type::IntValue){
         auto val = token_.lexeme;
         match(token_.type);
         return new ValueExprNode(val);

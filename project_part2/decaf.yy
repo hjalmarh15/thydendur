@@ -134,10 +134,10 @@ parameters : parameter_list {$$ = $1;}
            | {$$ = new std::list<ParameterNode*>();}
 
 
-parameter_list : type Identifier
-                 {$$ = new std::list<ParameterNode*>(); $$->push_back(new ParameterNode($1, new VariableExprNode($2)));}
-               | parameter_list ptComma type Identifier
-                 { $$ = $1; $$->push_back(new ParameterNode($3, new VariableExprNode($4)));}
+parameter_list : type variable
+                 {$$ = new std::list<ParameterNode*>(); $$->push_back(new ParameterNode($1, $2));}
+               | parameter_list ptComma type variable
+                 { $$ = $1; $$->push_back(new ParameterNode($3, $4));}
 
 statement_list: statement_list statement {$$ = $1; $$->push_back($2);}
             | {$$ = new std::list<StmNode*>();}
