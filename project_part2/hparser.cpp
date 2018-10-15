@@ -53,17 +53,20 @@ ValueType HParser::type()
         match( decaf::token_type::kwBool );
         valuetype = ValueType::BoolVal;
     }
-    else if( token_.type == decaf::token_type::kwVoid) {
-        match(decaf::token_type::kwVoid);
-        valuetype = ValueType ::VoidVal;
-    }
     else {
        error(decaf::token_type::kwInt);
     }
     return valuetype;
 }
 
+ValueType HParser::method_return_type() {
+    if( token_.type == decaf::token_type::kwVoid) {
+        match(decaf::token_type::kwVoid);
+        return ValueType ::VoidVal;
+    }
 
+    return type();
+}
 list<VariableNode*>*
 HParser::variable_list()
 {
@@ -114,7 +117,7 @@ list<MethodNode*>* HParser::method_declarations() {
 
 MethodNode* HParser::method_declaration() {
         match(decaf::token_type::kwStatic);
-        ValueType return_type = this->type();
+        ValueType return_type = method_return_type();
         std::string id = token_.lexeme;
         match(decaf::token_type::Identifier);
         match(decaf::token_type::ptLParen);
@@ -473,15 +476,3 @@ ExprNode* HParser::factor(){
         return expr_nd;
     }
 }
-
-
-/*
-method_declaration::= static  method_return_type id( parameters){variable_declarationsstatement_list}
-protected:
-ValueType return_type_;
-std::string id_;
-synstd::list<ParameterNode*> *params_;
-std::list<VariableDeclarationNode*> *vars_decl_;
-std::list<StmNode*> *stms_;
-};
- */

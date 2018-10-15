@@ -74,7 +74,7 @@ class Parser;
 %left OpLogNot
 %left OpRelEQ OpRelNEQ OpRelLT OpRelLTE OpRelGTE OpRelGT
 %left OpArtPlus OpArtMinus
-%left OpArtMult OpArtMod OpArtDiv
+%left OpArtMult OpArtModulus OpArtDiv
 
 %token <std::string> Identifier
 %token <std::string> IntValue

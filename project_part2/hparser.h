@@ -155,7 +155,7 @@ private:
     ExprNode* expression_mult_pr(ExprNode* lhs_expr);
     ExprNode* expression_unary();
     ExprNode* factor();
-
+    ValueType method_return_type();
 
 };
 #endif //DECAFPARSER_HPARSER_H
