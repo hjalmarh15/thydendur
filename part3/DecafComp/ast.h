@@ -302,7 +302,26 @@ public:
     virtual void icg( Data& data, TAC& tac ) const override
     {
         // To do ...
-        data.expr_return_var = "?";
+        lhs_->icg( data, tac );
+        std::string var_lhs = data.expr_return_var;
+        ValueType type_lhs = data.expr_return_type;
+
+        rhs_->icg( data, tac );
+        std::string var_rhs = data.expr_return_var;
+        ValueType type_rhs = data.expr_return_type;
+
+        std::string var = tac.tmp_variable_name(data.variable_no++);
+
+        tac.append( TAC::InstrType::VAR, var );
+        tac.append( instr_type_, var_lhs, var_rhs, var );
+
+        data.expr_return_var = var;
+        //data.expr_return_type = type_lhs;
+
+        if ( (type_lhs == ValueType::RealVal && type_rhs != ValueType::RealVal) ||
+             (type_lhs != ValueType::RealVal && type_rhs == ValueType::RealVal) ) {
+            warning_msg("Type mismatch in operation " + tac.IName[instr_type_] + ".");
+        }
     }
 
 protected:
@@ -866,7 +885,7 @@ public:
         }
 
         SymbolTable::Entry* entry = data.sym_table.lookup( "", "main" );
-        if ( entry == nullptr ) {
+        if ( entry == nullptr || entry->entry_type != EntryType::Method){
             error_msg( "Main method is missing." );
         }
     }
