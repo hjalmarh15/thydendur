@@ -9,6 +9,9 @@ int HParser::parse()
     return 0;
 }
 
+/*
+ * program ::= class id { variable_declarations method_declarations }
+ */
 ProgramNode*
 HParser::program() {
     match( decaf::token_type::kwClass );
@@ -22,7 +25,9 @@ HParser::program() {
     return new ProgramNode(name, list_vdn, list_mdn);
 }
 
-
+/*
+ * variable_declarations ::= type variable_list ; variable_declarations | ε
+ */
 list<VariableDeclarationNode*>*
 HParser::variable_declarations()
 {
@@ -37,7 +42,9 @@ HParser::variable_declarations()
     return list_vdn;
 }
 
-
+/*
+ * type ::= int | real | bool
+ */
 ValueType HParser::type()
 {
     ValueType valuetype = ValueType::VoidVal;
@@ -59,14 +66,11 @@ ValueType HParser::type()
     return valuetype;
 }
 
-ValueType HParser::method_return_type() {
-    if( token_.type == decaf::token_type::kwVoid) {
-        match(decaf::token_type::kwVoid);
-        return ValueType ::VoidVal;
-    }
 
-    return type();
-}
+/*
+ * variable_list ::= variable |  variable , variable_list
+ */
+
 list<VariableNode*>*
 HParser::variable_list()
 {
@@ -80,7 +84,9 @@ HParser::variable_list()
     return list_v;
 }
 
-
+/*
+ * variable ::= id | id[ int_value ]
+ */
 VariableNode*
 HParser::variable( string id )
 {
@@ -101,6 +107,9 @@ HParser::variable( string id )
 }
 
 
+/*
+ * method_declarations ::= method_declaration method_declarations | method_declaration
+ */
 
 list<MethodNode*>* HParser::method_declarations() {
     auto list_mdn = new list<MethodNode*>();
@@ -115,6 +124,10 @@ list<MethodNode*>* HParser::method_declarations() {
 
 }
 
+/*
+ * method_declaration ::= static method_return_type id( parameters )
+ * {variable_declarations statement_list}
+ */
 MethodNode* HParser::method_declaration() {
         match(decaf::token_type::kwStatic);
         ValueType return_type = method_return_type();
@@ -130,6 +143,22 @@ MethodNode* HParser::method_declaration() {
         return new MethodNode(return_type, id, list_param, list_vdn, list_stm );
 }
 
+/*
+ * method_return_type ::= type | void
+ */
+ValueType HParser::method_return_type() {
+    if( token_.type == decaf::token_type::kwVoid) {
+        match(decaf::token_type::kwVoid);
+        return ValueType ::VoidVal;
+    }
+
+    return type();
+}
+
+
+/*
+ * parameters ::= parameter_list | ε
+ */
 list<ParameterNode*> *HParser::parameters() {
     auto list_param = new list<ParameterNode*>();
     parameter_list(list_param);
@@ -141,6 +170,9 @@ list<ParameterNode*> *HParser::parameters() {
     return list_param;
 }
 
+/*
+ * parameter_list ::= type variable | type variable, parameter_list
+ */
 void HParser::parameter_list(list<ParameterNode*>* list_param) {
     while(token_.type == decaf::token_type::kwInt ||
           token_.type == decaf::token_type::kwReal ||
@@ -150,6 +182,11 @@ void HParser::parameter_list(list<ParameterNode*>* list_param) {
         list_param->push_back(new ParameterNode(type, var));
     }
 }
+
+
+/*
+ * statement_list ::=  statement statement_list | ε
+ */
 
 list<StmNode*> *HParser::statement_list() {
 
@@ -163,12 +200,21 @@ list<StmNode*> *HParser::statement_list() {
           token_.type == decaf::token_type::ptLBrace ||
           token_.type == decaf::token_type::Identifier)
     {
-        //match(token_.type);
         stm_list->push_back(statement());
     }
     return stm_list;
 }
 
+
+/*
+ * statement ::= if(expr) statement_block optional_else
+ * | for( variable = expr; expr; variable op_incr_decr) statement_block
+ * | return optional_expr;
+ * | break;
+ * | continue;
+ * | statement_block
+ * | id_start_stm
+ */
 StmNode* HParser::statement(){
     StmNode* stm_node;
     if(token_.type == decaf::token_type::kwIf){
@@ -233,6 +279,11 @@ StmNode* HParser::statement(){
     return stm_node;
 }
 
+/*
+ * id_start_stm ::=id (expr_list);
+ * | variable op_incr_decr;
+ * | variable = expr;
+ */
 StmNode* HParser::id_start_stm(){
     StmNode* stm_nd;
     string id = token_.lexeme;
@@ -263,17 +314,9 @@ StmNode* HParser::id_start_stm(){
     return stm_nd;
 }
 
-StmNode* HParser::op_incr_decr() {
-    auto var = variable();
-    if (token_.type == decaf::token_type::OpArtInc) {
-        match(decaf::token_type::OpArtInc);
-        return new IncrStmNode(var);
-    }
-    else if (token_.type == decaf::token_type::OpArtDec) {
-        match(decaf::token_type::OpArtDec);
-        return new DecrStmNode(var);
-    }
-}
+/*
+ * optional_expr ::= expr | ε
+ */
 ExprNode*  HParser::optional_expression(){
     if(token_.type != decaf::token_type::ptSemicolon)
         return expression();
@@ -281,6 +324,10 @@ ExprNode*  HParser::optional_expression(){
         return nullptr;
 }
 
+
+/*
+ * statement_block ::= {statement_list}
+ */
 BlockStmNode* HParser::statement_block(){
     match(decaf::token_type::ptLBrace);
     auto stm_block = new BlockStmNode(statement_list());
@@ -288,6 +335,9 @@ BlockStmNode* HParser::statement_block(){
         return stm_block;
 }
 
+/*
+ * optional_else ::= else statement_block | ε
+ */
 BlockStmNode* HParser::optional_else() {
     if(token_.type != decaf::token_type::kwElse)
         return nullptr;
@@ -295,12 +345,19 @@ BlockStmNode* HParser::optional_else() {
     return statement_block();
 }
 
+/*
+ * expr_list ::= expr more_expr | ε
+ */
 std::list<ExprNode*> *HParser::expr_list(){
     auto lst = new list<ExprNode*>();
     lst->push_back(expression());
     return more_expr(lst);;
 }
 
+
+/*
+ * more_expr ::= , expr more_expr | ε
+ */
 std::list<ExprNode*> *HParser::more_expr(std::list<ExprNode*>* lst){
     while(token_.type == decaf::token_type::ptComma) {
         match(decaf::token_type::ptComma);
@@ -309,11 +366,17 @@ std::list<ExprNode*> *HParser::more_expr(std::list<ExprNode*>* lst){
     return lst;
 }
 
+/*
+ * expr ::= expr_and expr’
+ */
 ExprNode* HParser::expression(){
     auto lhs_expr = expression_and();
     return expression_pr(lhs_expr);
 }
 
+/*
+ * expr’ ::= || expr_and expr’ | ε
+ */
 ExprNode* HParser::expression_pr(ExprNode* lhs_expr){
     if(token_.type == decaf::token_type::OpLogOr){
         match(decaf::token_type::OpLogOr);
@@ -322,10 +385,18 @@ ExprNode* HParser::expression_pr(ExprNode* lhs_expr){
     }
     return lhs_expr;
 }
+
+/*
+ * expr_and ::= expr_eq expr_and’
+ */
 ExprNode* HParser::expression_and(){
     auto lhs_expr = expression_eq();
     return expression_and_pr(lhs_expr);
 }
+
+/*
+ * expr_and’ ::= && expr_eq expr_and’ | ε
+ */
 ExprNode* HParser::expression_and_pr(ExprNode* lhs_expr){
     if(token_.type == decaf::token_type::OpLogAnd){
         match(decaf::token_type::OpLogAnd);
@@ -334,10 +405,19 @@ ExprNode* HParser::expression_and_pr(ExprNode* lhs_expr){
     }
     return lhs_expr;
 }
+
+/*
+ * expr_eq ::= expr_rel expr_eq’
+ */
 ExprNode* HParser::expression_eq(){
     auto lhs_expr = expression_rel();
     return expression_eq_pr(lhs_expr);
 }
+
+
+/*
+ * expr_eq’ ::= op_eq expr_rel expr_eq’ | ε
+ */
 ExprNode* HParser::expression_eq_pr(ExprNode* lhs_expr){
     if(token_.type == decaf::token_type::OpRelEQ){
         match(decaf::token_type::OpRelEQ);
@@ -351,10 +431,18 @@ ExprNode* HParser::expression_eq_pr(ExprNode* lhs_expr){
     }
     return lhs_expr;
 }
+
+/*
+ * expr_rel ::= expr_add expr_rel’
+ */
 ExprNode* HParser::expression_rel(){
     auto lhs_expr = expression_add();
     return expression_rel_pr(lhs_expr);
 }
+
+/*
+ * expr_rel’ ::= op_rel expr_add expr_rel’ | ε
+ */
 ExprNode* HParser::expression_rel_pr(ExprNode* lhs_expr){
     if(token_.type == decaf::token_type::OpRelGT){
         match(decaf::token_type::OpRelGT);
@@ -378,10 +466,18 @@ ExprNode* HParser::expression_rel_pr(ExprNode* lhs_expr){
     }
     return lhs_expr;
 }
+
+/*
+ * expr_add ::= expr_mult    expr_add’
+ */
 ExprNode* HParser::expression_add(){
     auto lhs_expr = expression_mult();
     return expression__add_pr(lhs_expr);
 }
+
+/*
+ * expr_add’ ::= op_add expr_mult expr_add’|ε
+ */
 ExprNode* HParser::expression__add_pr(ExprNode* lhs_expr){
     if(token_.type == decaf::token_type::OpArtPlus){
         match(decaf::token_type::OpArtPlus);
@@ -395,10 +491,18 @@ ExprNode* HParser::expression__add_pr(ExprNode* lhs_expr){
     }
     return lhs_expr;
 }
+
+/*
+ * expr_mult ::= expr_unary expr_mult’
+ */
 ExprNode* HParser::expression_mult(){
     auto lhs_expr = expression_unary();
     return expression_mult_pr(lhs_expr);
 }
+
+/*
+ * expr_mult’ ::= op_mult expr_unary expr_mult’|ε
+ */
 ExprNode* HParser::expression_mult_pr(ExprNode* lhs_expr){
     if(token_.type == decaf::token_type::OpArtMult){
         match(decaf::token_type::OpArtMult);
@@ -417,6 +521,10 @@ ExprNode* HParser::expression_mult_pr(ExprNode* lhs_expr){
     }
     return lhs_expr;
 }
+
+/*
+ * expr_unary ::= op_unary    expr_unary   |   factor
+ */
 ExprNode* HParser::expression_unary(){
     if(token_.type == decaf::token_type::OpArtPlus){
         match(decaf::token_type::OpArtPlus);
@@ -439,6 +547,11 @@ ExprNode* HParser::expression_unary(){
 }
 
 
+/*
+ * factor ::= value | (expr) | variable | id( expr_list)
+ *
+ * value ::= int_value  | real_value | bool_value
+ */
 ExprNode* HParser::factor(){
     if(token_.type == decaf::token_type::BoolValue) {
         auto val = token_.lexeme;
