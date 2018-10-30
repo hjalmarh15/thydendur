@@ -125,7 +125,7 @@ public:
         std::string var = tac.tmp_variable_name(data.variable_no++);
 
         tac.append( TAC::InstrType::VAR, var );
-        tac.append( TAC::InstrType::AND, data.expr_return_var, "0", lab_and_true );
+        tac.append( TAC::InstrType::AND, var_lhs, var_rhs, lab_and_true );
         tac.append( TAC::InstrType::ASSIGN, "0", var );
         tac.append( TAC::InstrType::GOTO, lab_and_end );
         tac.label_next_instr( lab_and_true );
