@@ -110,7 +110,14 @@ public:
     AndExprNode( ExprNode *lhs, ExprNode *rhs ) : lhs_(lhs), rhs_(rhs) {}
 
     virtual void icg( Data& data, TAC& tac ) const override {
-        // To do ...
+        lhs_->icg( data, tac );
+        std::string var_lhs = data.expr_return_var;
+        ValueType type_lhs = data.expr_return_type;
+
+        rhs_->icg( data, tac );
+        std::string var_rhs = data.expr_return_var;
+        ValueType type_rhs = data.expr_return_type;
+        std::cout << var_lhs;
     }
 
     virtual const std::string str( ) const override {
@@ -303,6 +310,7 @@ public:
     {
         // To do ...
         lhs_->icg( data, tac );
+
         std::string var_lhs = data.expr_return_var;
         ValueType type_lhs = data.expr_return_type;
 
@@ -638,7 +646,13 @@ public:
     DecrStmNode( VariableExprNode *var ) : var_(var) {}
 
     virtual void icg( Data& data, TAC& tac ) const override {
-        // To do ...
+        var_->icg(data,tac);
+        if( data.expr_return_type == ValueType::RealVal) {
+            tac.append(TAC::InstrType::SUB, data.expr_return_var, "1.0", data.expr_return_var);
+        }
+        else {
+            tac.append(TAC::InstrType::SUB, data.expr_return_var, "1", data.expr_return_var);
+        }
     }
 
     virtual const std::string str( ) const override {
