@@ -166,19 +166,19 @@ public:
         std::string var_rhs = data.expr_return_var;
         ValueType type_rhs = data.expr_return_type;
 
-        std::string lab_or_true = tac.label_name("or_true", data.label_no);
+        std::string lab_or_false = tac.label_name("or_true", data.label_no);
         std::string lab_or_end = tac.label_name("or_end", data.label_no);
         data.label_no++;
         std::string var = tac.tmp_variable_name(data.variable_no++);
 
         tac.append( TAC::InstrType::VAR, var );
         //If either lhs_ or rhs_ is true the or is true
-        tac.append( TAC::InstrType::EQ, var_lhs, "1", lab_or_true );
-        tac.append( TAC::InstrType::EQ, var_rhs, "1", lab_or_true );
-        tac.append( TAC::InstrType::ASSIGN, "0", var );
-        tac.append( TAC::InstrType::GOTO, lab_or_end );
-        tac.label_next_instr( lab_or_true );
+        tac.append( TAC::InstrType::EQ, var_lhs, "0", lab_or_false );
+        tac.append( TAC::InstrType::EQ, var_rhs, "0", lab_or_false );
         tac.append( TAC::InstrType::ASSIGN, "1", var );
+        tac.append( TAC::InstrType::GOTO, lab_or_end );
+        tac.label_next_instr( lab_or_false );
+        tac.append( TAC::InstrType::ASSIGN, "0", var );
         tac.label_next_instr( lab_or_end );
 
         data.expr_return_var = var;
