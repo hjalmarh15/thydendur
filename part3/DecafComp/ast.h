@@ -138,7 +138,6 @@ public:
         if ( (type_lhs == ValueType::RealVal || type_rhs == ValueType::RealVal) ) {
             warning_msg(std::string("Type mismatch in operation ") + "&&.");
         }
-
     }
 
     virtual const std::string str( ) const override {
@@ -157,6 +156,33 @@ public:
 
     virtual void icg( Data& data, TAC& tac ) const override {
         // To do ...
+        lhs_->icg( data, tac );
+        std::string var_lhs = data.expr_return_var;
+        ValueType type_lhs = data.expr_return_type;
+
+        rhs_->icg( data, tac );
+        std::string var_rhs = data.expr_return_var;
+        ValueType type_rhs = data.expr_return_type;
+
+        std::string lab_or_true = tac.label_name("or_true", data.label_no);
+        std::string lab_or_end = tac.label_name("or_end", data.label_no);
+        data.label_no++;
+        std::string var = tac.tmp_variable_name(data.variable_no++);
+
+        tac.append( TAC::InstrType::VAR, var );
+        tac.append( TAC::InstrType::OR, data.expr_return_var, "0", lab_or_true );
+        tac.append( TAC::InstrType::ASSIGN, "0", var );
+        tac.append( TAC::InstrType::GOTO, lab_or_end );
+        tac.label_next_instr( lab_or_true );
+        tac.append( TAC::InstrType::ASSIGN, "1", var );
+        tac.label_next_instr( lab_or_end );
+
+        data.expr_return_var = var;
+        data.expr_return_type = ValueType::IntVal;
+
+        if ( (type_lhs == ValueType::RealVal || type_rhs == ValueType::RealVal) ) {
+            warning_msg(std::string("Type mismatch in operation ") + "||.");
+        }
     }
 
     virtual const std::string str( ) const override {
