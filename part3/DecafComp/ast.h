@@ -127,7 +127,6 @@ public:
         tac.append( TAC::InstrType::VAR, var );
         //If either lhs_ or rhs_ is false the AND is false
         tac.append( TAC::InstrType::EQ, var_lhs, "0", lab_and_false );
-        tac.append( TAC::InstrType::ASSIGN, "0", var );
         tac.append( TAC::InstrType::EQ, var_rhs, "0", lab_and_false );
         tac.append( TAC::InstrType::ASSIGN, "1", var );
         tac.append( TAC::InstrType::GOTO, lab_and_end );
@@ -173,7 +172,9 @@ public:
         std::string var = tac.tmp_variable_name(data.variable_no++);
 
         tac.append( TAC::InstrType::VAR, var );
-        tac.append( TAC::InstrType::OR, data.expr_return_var, "0", lab_or_true );
+        //If either lhs_ or rhs_ is true the or is true
+        tac.append( TAC::InstrType::EQ, var_lhs, "1", lab_or_true );
+        tac.append( TAC::InstrType::EQ, var_rhs, "1", lab_or_true );
         tac.append( TAC::InstrType::ASSIGN, "0", var );
         tac.append( TAC::InstrType::GOTO, lab_or_end );
         tac.label_next_instr( lab_or_true );
