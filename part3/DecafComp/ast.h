@@ -136,7 +136,7 @@ public:
         data.expr_return_type = ValueType::IntVal;
 
         if ( (type_lhs == ValueType::RealVal || type_rhs == ValueType::RealVal) ) {
-            warning_msg(std::string("Type mismatch in operation ") + "&& " + tostr(lhs_) + " " + tostr(rhs_) + ".");
+            warning_msg(std::string("Type mismatch in operation ") + "&&.");
         }
 
     }
