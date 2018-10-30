@@ -119,17 +119,20 @@ public:
         std::string var_rhs = data.expr_return_var;
         ValueType type_rhs = data.expr_return_type;
 
-        std::string lab_and_true = tac.label_name("and_true", data.label_no);
+        std::string lab_and_false = tac.label_name("and_false", data.label_no);
         std::string lab_and_end = tac.label_name("and_end", data.label_no);
         data.label_no++;
         std::string var = tac.tmp_variable_name(data.variable_no++);
 
         tac.append( TAC::InstrType::VAR, var );
-        tac.append( TAC::InstrType::AND, var_lhs, var_rhs, lab_and_true );
+        //If either lhs_ or rhs_ is false the AND is false
+        tac.append( TAC::InstrType::EQ, var_lhs, "0", lab_and_false );
         tac.append( TAC::InstrType::ASSIGN, "0", var );
-        tac.append( TAC::InstrType::GOTO, lab_and_end );
-        tac.label_next_instr( lab_and_true );
+        tac.append( TAC::InstrType::EQ, var_rhs, "0", lab_and_false );
         tac.append( TAC::InstrType::ASSIGN, "1", var );
+        tac.append( TAC::InstrType::GOTO, lab_and_end );
+        tac.label_next_instr( lab_and_false );
+        tac.append( TAC::InstrType::ASSIGN, "0", var );
         tac.label_next_instr( lab_and_end );
 
         data.expr_return_var = var;
