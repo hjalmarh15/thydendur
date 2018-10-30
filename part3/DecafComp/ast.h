@@ -111,6 +111,33 @@ public:
 
     virtual void icg( Data& data, TAC& tac ) const override {
         // To do ...
+        lhs_->icg( data, tac );
+        std::string var_lhs = data.expr_return_var;
+        ValueType type_lhs = data.expr_return_type;
+
+        rhs_->icg( data, tac );
+        std::string var_rhs = data.expr_return_var;
+        ValueType type_rhs = data.expr_return_type;
+
+        std::string lab_and_true = tac.label_name("and_true", data.label_no);
+        std::string lab_and_end = tac.label_name("and_end", data.label_no);
+        data.label_no++;
+        std::string var = tac.tmp_variable_name(data.variable_no++);
+
+        tac.append( TAC::InstrType::VAR, var );
+        tac.append( TAC::InstrType::AND, data.expr_return_var, "0", lab_and_true );
+        tac.append( TAC::InstrType::ASSIGN, "0", var );
+        tac.append( TAC::InstrType::GOTO, lab_and_end );
+        tac.label_next_instr( lab_and_true );
+        tac.append( TAC::InstrType::ASSIGN, "1", var );
+        tac.label_next_instr( lab_and_end );
+
+        data.expr_return_var = var;
+        data.expr_return_type = ValueType::IntVal;
+
+        if ( (type_lhs == ValueType::RealVal || type_rhs == ValueType::RealVal) ) {
+            warning_msg(std::string("Type mismatch in operation ") + "&& " + tostr(lhs_) + " " + tostr(rhs_) + ".");
+        }
     }
 
     virtual const std::string str( ) const override {
