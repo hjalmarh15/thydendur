@@ -608,6 +608,13 @@ public:
 
     virtual void icg( Data& data, TAC& tac ) const override {
         // To do ...
+        for(auto e : *expr_list_) {
+            //tac.append(TAC::InstrType::APARAM, tostr(e));
+            e->icg(data, tac);
+            tac.append(TAC::InstrType::APARAM, data.expr_return_var);
+
+        }
+        tac.append(TAC::InstrType::CALL, id_);
     }
 
     virtual const std::string str( ) const override {
