@@ -853,7 +853,8 @@ public:
 
         tac.label_next_instr(lab_if_false);
         if(stm_else_ != nullptr){
-
+            stm_else_->icg(data, tac);
+            tac.append(TAC::InstrType::GOTO, lab_if_end);
         }
 
         tac.label_next_instr(lab_if_end);
