@@ -777,6 +777,11 @@ public:
     BreakStmNode(  ) { }
 
     virtual void icg( Data& data, TAC& tac ) const override {
+
+        //check if we're inside a for loop
+        if(data.for_label_no.size() == 0) {
+            error_msg("Break statement outside of for loop");
+        }
         auto label_for_end = tac.label_name("for_end", data.for_label_no.top());
         tac.append(TAC::InstrType::GOTO, label_for_end);
     }
@@ -794,8 +799,13 @@ public:
     ContinueStmNode(  ) { }
 
     virtual void icg( Data& data, TAC& tac ) const override {
-        auto label_for_eval = tac.label_name("for_incr", data.for_label_no.top());
-        tac.append(TAC::InstrType::GOTO, label_for_eval);
+
+        //check if we're inside a for loop
+        if(data.for_label_no.size() == 0) {
+            error_msg("Continue statement outside of for loop");
+        }
+        auto label_for_incr = tac.label_name("for_incr", data.for_label_no.top());
+        tac.append(TAC::InstrType::GOTO, label_for_incr);
     }
 
     virtual const std::string str( ) const override {
