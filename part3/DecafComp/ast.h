@@ -608,13 +608,46 @@ public:
 
     virtual void icg( Data& data, TAC& tac ) const override {
         // To do ...
-        for(auto e : *expr_list_) {
-            //tac.append(TAC::InstrType::APARAM, tostr(e));
+        auto entry = data.sym_table.lookup("", id_);
+        std::vector<std::string> arguments;
+        if (entry != NULL) {
+            std::string tmp = "";
+            for (unsigned int i = 0; i < entry->signature.length(); i++) {
+                if (entry->signature.at(i) == ':') {
+                    i++;
+                    if (tmp != "") {
+                        arguments.push_back(tmp);
+                        tmp = "";
+                    }
+                } else {
+                    tmp += entry->signature.at(i);
+                }
+            }
+            if (tmp != "") {
+                arguments.push_back(tmp);
+            }
+        }
+        for (auto e : *expr_list_) {
             e->icg(data, tac);
             tac.append(TAC::InstrType::APARAM, data.expr_return_var);
-
         }
+
         tac.append(TAC::InstrType::CALL, id_);
+        if((arguments.size() != expr_list_->size()) && entry != nullptr) {
+            warning_msg("Number of arguments differs from function declaration");
+        }
+
+        int counter = 0;
+        for (auto e : *expr_list_) {
+            if(counter >= arguments.size()) {
+                break;
+            }
+            if(arguments[counter] != tostr(data.expr_return_type)) {
+                warning_msg("Type mismatch for argument " + data.expr_return_var + " in function " + id_ + ". Got " + tostr(data.expr_return_type)
+                            + " but expected " + arguments[counter]);
+            }
+            counter++;
+        }
     }
 
     virtual const std::string str( ) const override {
@@ -909,6 +942,7 @@ public:
         tac.label_next_instr(lab_for_eval);
 
         expr_->icg(data,tac);
+        auto return_type = data.expr_return_type;
         tac.append(TAC::InstrType::EQ, data.expr_return_var, "0", lab_for_end);
         stms_->icg(data,tac);
 
@@ -919,6 +953,9 @@ public:
         tac.append(TAC::InstrType::GOTO, lab_for_eval);
 
         tac.label_next_instr(lab_for_end);
+        if(return_type != ValueType::BoolVal  && return_type != ValueType::IntVal) {
+            warning_msg("Non boolean/int returned from expression in for statement");
+        }
     }
 
     virtual const std::string str( ) const override {
