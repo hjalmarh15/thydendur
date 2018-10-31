@@ -777,7 +777,8 @@ public:
     BreakStmNode(  ) { }
 
     virtual void icg( Data& data, TAC& tac ) const override {
-        // To do ...
+        auto label_for_end = tac.label_name("for_end", data.for_label_no.top());
+        tac.append(TAC::InstrType::GOTO, label_for_end);
     }
 
     virtual const std::string str( ) const override {
@@ -793,7 +794,8 @@ public:
     ContinueStmNode(  ) { }
 
     virtual void icg( Data& data, TAC& tac ) const override {
-        // To do ...
+        auto label_for_eval = tac.label_name("for_eval", data.for_label_no.top());
+        tac.append(TAC::InstrType::GOTO, label_for_eval);
     }
 
     virtual const std::string str( ) const override {
@@ -885,7 +887,26 @@ public:
             : assign_(assign), expr_(expr), inc_dec_(inc_dec), stms_(stms_) {}
 
     virtual void icg( Data& data, TAC& tac ) const override {
-        // To do ...
+        //To do
+        std::string lab_for_end = tac.label_name("for_end", data.label_no);
+        std::string lab_for_eval = tac.label_name( "for_eval", data.label_no );
+        std::string lab_for_incr = tac.label_name("for_incr", data.label_no);
+        data.for_label_no.push(data.label_no);
+        data.label_no++;
+
+        assign_->icg(data, tac);
+
+        tac.label_next_instr(lab_for_eval);
+
+        expr_->icg(data,tac);
+        tac.append(TAC::InstrType::EQ, data.expr_return_var, "0", lab_for_end);
+        stms_->icg(data,tac);
+
+        inc_dec_->icg(data,tac);
+
+        tac.append(TAC::InstrType::GOTO, lab_for_eval);
+
+        tac.label_next_instr(lab_for_end);
     }
 
     virtual const std::string str( ) const override {
