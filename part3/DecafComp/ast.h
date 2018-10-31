@@ -810,6 +810,9 @@ public:
 
     virtual void icg( Data& data, TAC& tac ) const override {
         // To do ...
+        for ( auto stm: *stms_ ) {
+            stm->icg( data, tac );
+        }
     }
 
     virtual const std::string str( ) const override {
@@ -834,7 +837,26 @@ public:
             : expr_(expr), stm_if_(stm_if), stm_else_(stm_else) {}
 
     virtual void icg( Data& data, TAC& tac ) const override {
-        // To do ...
+
+        expr_->icg(data, tac);
+        //Create label for if IF statement is false
+        std::string lab_if_false = tac.label_name("if_false", data.label_no);
+        std::string lab_if_end = tac.label_name("if_end", data.label_no);
+        data.label_no++;
+
+        tac.append(TAC::InstrType::EQ, data.expr_return_var, "0", lab_if_false);
+
+        //If the statement is true then
+        stm_if_->icg(data, tac);
+
+        tac.append(TAC::InstrType::GOTO, lab_if_end);
+
+        tac.label_next_instr(lab_if_false);
+        if(stm_else_ != nullptr){
+
+        }
+
+        tac.label_next_instr(lab_if_end);
     }
 
     virtual const std::string str( ) const override {
