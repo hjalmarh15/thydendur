@@ -633,8 +633,10 @@ public:
         }
 
         tac.append(TAC::InstrType::CALL, id_);
+        data.expr_return_var = id_;
+
         if((arguments.size() != expr_list_->size()) && entry != nullptr) {
-            warning_msg("Number of arguments differs from function declaration");
+            warning_msg("Number of arguments differs from function declaration.");
         }
 
         int counter = 0;
@@ -642,7 +644,8 @@ public:
             if(counter >= arguments.size()) {
                 break;
             }
-            if(arguments[counter] != tostr(data.expr_return_type)) {
+            if((arguments[counter] == tostr(ValueType::RealVal) && tostr(data.expr_return_type) != tostr(ValueType::RealVal)) ||
+                (arguments[counter] != tostr(ValueType::RealVal) && tostr(data.expr_return_type) == tostr(ValueType::RealVal))){
                 warning_msg("Type mismatch for argument " + data.expr_return_var + " in function " + id_ + ". Got " + tostr(data.expr_return_type)
                             + " but expected " + arguments[counter]);
             }
