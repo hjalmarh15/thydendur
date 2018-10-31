@@ -794,7 +794,7 @@ public:
     ContinueStmNode(  ) { }
 
     virtual void icg( Data& data, TAC& tac ) const override {
-        auto label_for_eval = tac.label_name("for_eval", data.for_label_no.top());
+        auto label_for_eval = tac.label_name("for_incr", data.for_label_no.top());
         tac.append(TAC::InstrType::GOTO, label_for_eval);
     }
 
@@ -902,8 +902,10 @@ public:
         tac.append(TAC::InstrType::EQ, data.expr_return_var, "0", lab_for_end);
         stms_->icg(data,tac);
 
-        inc_dec_->icg(data,tac);
 
+        tac.append(TAC::InstrType::GOTO, lab_for_incr);
+        tac.label_next_instr(lab_for_incr);
+        inc_dec_->icg(data,tac);
         tac.append(TAC::InstrType::GOTO, lab_for_eval);
 
         tac.label_next_instr(lab_for_end);
